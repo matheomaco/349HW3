@@ -1,24 +1,31 @@
-(function(window) {
-  'use strict';
-  var App = window.App || {};
+(function (window) {
+    'use strict';
+    var App = window.App || {};
 
-  function DataStore() {
-    this.data = {};
-  }
+    class DataStore {
+        constructor() {
+            console.log('running the DataStore constructor.');
+            this.data = {};
+            //        return undefined;
+        }
+        add(key, val) { this.data[key] = val; }
+        get(key)      { return this.data[key]; }
+        getAll()      { return this.data; }
+        remove(key)   { delete this.data[key]; }
 
-  DataStore.prototype.add = function(key, val) {
-    this.data[key] = val;
-  };
-  DataStore.prototype.get = function(key) {
-    return this.data[key];
-  };
-  DataStore.prototype.getAll = function() {
-    return this.data;
-  };
-  DataStore.prototype.remove = function(key) {
-    delete this.data[key];
-  };
+        static runTests(ds) {
+            ds.add('m@bond.com', 'tea');
+            ds.add('james@bond.com', 'espresso');
+            console.log(ds.getAll());
+            ds.remove('james@bond.com');
+            console.log('After removing james@bond.com' + ds.getAll());
+            console.log(ds.get('m@bond.com'));
+            console.log('Trying to get the removed james@bond.com gets... ' 
+                        + ds.get('james@bond.com'));    
+        }
+    }
+ 
+    App.DataStore = DataStore;
+    window.App = App;
 
-  App.DataStore = DataStore;
-  window.App = App;
 })(window);

@@ -1,27 +1,45 @@
-(function(window) {
-  'use strict';
-  var App = window.App || {};
+(function (window) {
+    'use strict';
+    var App = window.App || {};
 
-  function Truck(truckId, db) {
-    this.truckId = truckId;
-    this.db = db;
-  }
-  Truck.prototype.createOrder = function(order) {
-    console.log('Adding order for ' + order.email);
-    this.db.add(order.email, order);
-  };
-  Truck.prototype.deliverOrder = function(customerId) {
-    console.log('Delivering order for ' + customerId);
-    this.db.remove(customerId);
-  };
-  Truck.prototype.printOrders = function() {
-    var customerIdArray = Object.keys(this.db.getAll());
-    console.log('Truck #' + this.truckId + ' has pending orders:');
-    customerIdArray.forEach(function(id) {
-      console.log(this.db.get(id));
-    }.bind(this));
-  };
+    class Truck {
+        constructor(truckId, db) {
+            console.log('running the Truck constructor.');
+            this.truckId = truckId;
+            this.db = db;
+        }
+        
+        createOrder(order) {
+            console.log('Adding order for ' + order.emailAddress);
+            this.db.add(order.emailAddress, order);
+        }
+        deliverOrder(customerId) {
+            console.log('Delivering order for ' + customerId);
+            this.db.remove(customerId);
+        }
+        printOrders() {
+            var customerIdArray = Object.keys(this.db.getAll());
+            customerIdArray.forEach(function(id) { 
+                console.log(this.db.get(id));
+            }.bind(this));
+        }
 
-  App.Truck = Truck;
-  window.App = App;
+        static runTests(truck) { 
+            truck.createOrder({ emailAddress: 'dr@no.com', coffee: 'decaf'});
+            truck.createOrder({ emailAddress: 'me@goldfinger.com', coffee: 'double mocha'});
+            truck.createOrder({ emailAddress: 'm@bond.com', coffee: 'earl grey'});
+            truck.printOrders();
+            
+            truck.deliverOrder('m@bond.com');
+            truck.deliverOrder('dr@no.com');
+            truck.printOrders();
+
+            truck.deliverOrder('me@bond.com');
+            truck.printOrders();
+        }
+    }
+ 
+    App.Truck = Truck;
+    window.App = App;
+
 })(window);
